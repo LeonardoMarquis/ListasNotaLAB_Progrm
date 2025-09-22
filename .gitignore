@@ -2,6 +2,7 @@
 # com esse nome, indepentente de onde elas estiverem dentro da pasta aberta
 # na ide
 __pycache__/
+ManipularDataseRandoms/
 *.pyc
 *.pyo
 *.pyd
