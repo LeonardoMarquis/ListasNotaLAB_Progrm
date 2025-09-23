@@ -1,7 +1,7 @@
 def main():
     def cadastrar_pessoas():
         cpf = int(input("\ncpf: "))
-        if pessoas[cpf]:        # se existir....
+        if cpf in pessoas:        # se existir....
             print("\nJá existe alguem com esse cpf!")
                 
         else:
@@ -11,20 +11,31 @@ def main():
 
             while True:
                 option = str(input("Digitar telefones, min 8 e max 11 digitos (sim/nao): "))
-                if option.lower == "sim":
-                    telefone = str(input("Telefone: "))
 
-                    if len(telefone) < 8 or len(telefone)> 11:
-                        print("Errou numero de digitos do telefone")
-                        break
+                match option.lower():
+
+                    case "sim":
+                        telefone = str(input("Telefone: "))
+
+                        if len(telefone) < 8 or len(telefone)> 11:
+                            print("Errou numero de digitos do telefone")
+                            break
 
                         telefones.append(telefone)
-                elif option.lower == "nao":
-                    break
+                    case "nao":
 
-            pessoa = {'cpf': cpf, 'nome': nome, 'endereco': endereco, 'telefones': telefones}
+                        pessoa = {'cpf': cpf, 'nome': nome, 'endereco': endereco, 'telefones': telefones}
+                        pessoas[cpf] = pessoa   # no caso, a posicao n°cpf sera a posicao do dicionario pessoa, cpf sera um indice
 
-            pessoas.append(pessoa)
+                        print(f"\n{pessoas[cpf]} adicionado com sucesso")
+                        break
+                        
+                    case _:
+                        print("\nDigitaste algo errado! Nenhuma alteração feita")
+                        break
+
+
+
 
     def listar_pessoas(lista):
         print("\n========LISTAR PESSOAS====================================================================")
@@ -38,7 +49,7 @@ def main():
             print("\nCPF não encontrado")
 
         
-        for cpf in lista:
+        elif cpf in lista:
             print(lista[cpf])
 
     def buscar_pessoa_p_telefone(telefone, lista):
@@ -51,24 +62,25 @@ def main():
                     print("Telefone não encontrado!")
 
 
-    def deletar_pessoa_p_cpf(cpf, pessoas):
-        buscar_pessoa_p_cpf(cpf, pessoas)
+    def deletar_pessoa_p_cpf(cpf, lista):
+        buscar_pessoa_p_cpf(cpf, lista)
 
-        if buscar_pessoa_p_cpf(cpf, pessoas):
-            for 
-
+        if buscar_pessoa_p_cpf(cpf, lista):
+            for cpf in lista:
+                lista.pop(cpf)
+                print(f"{lista[cpf].nome} removido")
 
 
     #------------------------------------------------------------------------------
 
-    pessoas = []
+    pessoas = {}
 
     while True:
-        op = int(input("1-inserir Pessoa" \
+        op = int(input("\n1-inserir Pessoa" \
         "\n2-Listar Pessoas cadsatradas" \
         "\n3-Buscar Pessoas por cpf" \
         "\n4-Buscar Pessoa por Telefone" \
-        "\n5-Remover pessoa por cpf"))
+        "\n5-Remover pessoa por cpf\n"))
 
         match op:
 
