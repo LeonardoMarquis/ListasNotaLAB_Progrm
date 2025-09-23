@@ -50,6 +50,17 @@ def main():
                 else:
                     print("Telefone não encontrado!")
 
+
+    def deletar_pessoa_p_cpf(cpf, pessoas):
+        buscar_pessoa_p_cpf(cpf, pessoas)
+
+        if buscar_pessoa_p_cpf(cpf, pessoas):
+            for 
+
+
+
+    #------------------------------------------------------------------------------
+
     pessoas = []
 
     while True:
@@ -80,7 +91,17 @@ def main():
                 buscar_pessoa_p_telefone(telefone, pessoas)
 
             case 5:
+                print("\n========DELETAR PESSOAS POR CPF====================================================================")
                 
+                cpf = int(input("\nCpf: "))
+                deletar_pessoa_p_cpf(cpf, pessoas)
+                
+                
+
+            case 6:
+                print("\n========SAIR====================================================================")
+                print("Saiu")
+                break
 
             case _:
                 print("Digitaste algo errado!")
