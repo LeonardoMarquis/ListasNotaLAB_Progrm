@@ -40,7 +40,7 @@ def main():
     def listar_pessoas(lista):
         print("\n========LISTAR PESSOAS====================================================================")
         for i in lista:
-            print(i)
+            print(lista[i])
 
 
                 
@@ -54,9 +54,10 @@ def main():
 
     def buscar_pessoa_p_telefone(telefone, lista):
         for i in lista:
-            for telefone in i[telefone]:
-                if telefone in i[telefone]:
-                    print(i)
+            for telefone in lista[i]:     # é como se lista[i] virasse o "pessoa", e pessoa[telefone] é a lista de telefones guardada na chave 'telefone'
+                aux = lista[i]
+                if telefone in aux[telefone]:
+                    print(lista[i])
 
                 else:
                     print("Telefone não encontrado!")
@@ -88,7 +89,7 @@ def main():
                 cadastrar_pessoas()
 
             case 2:
-                listar_pessoas()
+                listar_pessoas(pessoas)
 
             case 3:
                 print("\n========BUSCAR PESSOAS POR CPF====================================================================")
