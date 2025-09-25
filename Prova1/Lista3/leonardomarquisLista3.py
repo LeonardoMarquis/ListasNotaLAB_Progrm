@@ -10,7 +10,7 @@ def main():
             telefones = []
 
             while True:
-                option = str(input("Digitar telefones, min 8 e max 11 digitos (sim/nao): "))
+                option = str(input("\nDigitar telefones, min 8 e max 11 digitos (sim/nao): "))
 
                 match option.lower():
 
@@ -38,9 +38,12 @@ def main():
 
 
     def listar_pessoas(lista):
-        print("\n========LISTAR PESSOAS====================================================================")
+        if len(lista) == 0:
+            print("\nA lista está vazia!")
+
         for i in lista:
             print(lista[i])
+        
 
 
                 
@@ -53,23 +56,25 @@ def main():
             print(lista[cpf])
 
     def buscar_pessoa_p_telefone(telefone, lista):
-        for i in lista:
-            for telefone in lista[i]:     # é como se lista[i] virasse o "pessoa", e pessoa[telefone] é a lista de telefones guardada na chave 'telefone'
-                aux = lista[i]
-                if telefone in aux[telefone]:
-                    print(lista[i])
+        telefone = str(telefone).strip()    # garante que o numero de telefone buscado sera uma string e estara sem espaços
 
-                else:
-                    print("Telefone não encontrado!")
+        for pessoa in lista.values():       # esse lista.values ja atravessa os indices, e pega os valores dentro dos indices e 
+                                            # e assim "pessoa" recebendo os valores dentro de lista que foram guardados nos indices cpf
+                                            # ex: "pessoa" vai ser lista[cpf tal], lista[cpf tal2], lista[cpf tal3] 
+            if telefone in pessoa['telefones']:
+                print(pessoa)
+                return
+        
+        print("\nTelefone não encontrado!")
 
 
     def deletar_pessoa_p_cpf(cpf, lista):
         buscar_pessoa_p_cpf(cpf, lista)
 
-        if buscar_pessoa_p_cpf(cpf, lista):
-            for cpf in lista:
-                lista.pop(cpf)
-                print(f"{lista[cpf].nome} removido")
+        if cpf in lista:
+            aux = lista[cpf]
+            print(f"{aux['nome']} removido")
+            lista.pop(cpf)
 
 
     #------------------------------------------------------------------------------
@@ -78,7 +83,7 @@ def main():
 
     while True:
         op = int(input("\n1-inserir Pessoa" \
-        "\n2-Listar Pessoas cadsatradas" \
+        "\n2-Listar Pessoas cadastradas" \
         "\n3-Buscar Pessoas por cpf" \
         "\n4-Buscar Pessoa por Telefone" \
         "\n5-Remover pessoa por cpf\n"))
@@ -86,9 +91,11 @@ def main():
         match op:
 
             case 1:
+                print("\n========CADASTRAR PESSOA====================================================================")
                 cadastrar_pessoas()
 
             case 2:
+                print("\n========LISTAR PESSOAS====================================================================")
                 listar_pessoas(pessoas)
 
             case 3:
