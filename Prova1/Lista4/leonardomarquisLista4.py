@@ -4,7 +4,7 @@ def main():
         pessoas_arquivo = open('bd.txt', 'a+', encoding='utf-8')
         
 
-        cpf = int(input("\ncpf: ")).strip()
+        cpf = str(input("\ncpf: ")).strip()
         if cpf in pessoas_arquivo:        # se existir....
             print("\nJá existe alguem com esse cpf!")
                 
@@ -32,7 +32,7 @@ def main():
 
                         telefones = telefones_separados_virgu
 
-                        linha_pessoa = f"{cpf};{nome};{endereco};{telefones}"
+                        linha_pessoa = f"{cpf};{nome};{endereco};{telefones}\n"
                         with open('bd.txt', mode='a', encoding='utf-8') as file:
                             file.write(linha_pessoa)
                         
@@ -63,16 +63,16 @@ def main():
         if len(pessoas) == 0:
             print("\nA lista está vazia!")
 
-        for i in pessoas:
-            print(pessoas[i])
+        for pessoa in pessoas:
+            print(pessoa)
         
 
 
                 
     def buscar_pessoa_p_cpf(cpf):
         try:
-            with open('bd.txt', 'r', encoding='utf-8') as file:
-                for linha in file:
+            with open('bd.txt', 'r', encoding='utf-8') as pessoas_arquivo:
+                for linha in pessoas_arquivo:
                     pessoa = linha_to_pessoa(linha)
                     if pessoa and pessoa["cpf"] == cpf:
                         return pessoa
@@ -84,37 +84,45 @@ def main():
         print("\ncpf não encontrado")
         return None
 
-    def buscar_pessoa_p_telefone(telefone, lista):
-        telefone = str(telefone).strip()    # garante que o numero de telefone buscado sera uma string e estara sem espaços
-
-        for pessoa in lista.values():       # esse lista.values ja atravessa os indices, e pega os valores dentro dos indices e 
-                                            # e assim "pessoa" recebendo os valores dentro de lista que foram guardados nos indices cpf
-                                            # ex: "pessoa" vai ser lista[cpf tal], lista[cpf tal2], lista[cpf tal3] 
-            if telefone in pessoa['telefones']:
-                print(pessoa)
-                return
-        
-        print("\nTelefone não encontrado!")
+    def buscar_pessoa_p_telefone(telefone):
+        try:
+            with open('bd.txt', 'r', encoding='utf-8') as pessoas_arquivo:
+                for linha in pessoas_arquivo:
+                    pessoa = linha_to_pessoa(linha)
+                    if pessoa and telefone in pessoa["telefones"]:
+                        return pessoa
+        except FileNotFoundError:
+            print("\nArquivo não encontrado")
+            pass
+        print("\ntelefone não encontrado")
+        return None
 
 
     def deletar_pessoa_p_cpf(cpf):
-        pessoas_arquivo = open('bd.txt', 'r', encoding='utf-8')
+        # no caso, excluir é na verdade reescrever o arquivo mas sem o que eu nao quero
+        achado = False
+        with open('bd.txt', 'r', encoding='utf-8') as pessoas_arquivo:
+            linhas = pessoas_arquivo.readlines()
 
-        buscar_pessoa_p_cpf(cpf, conteudo)
-
-        if cpf in conteudo:
-            aux = conteudo[cpf]
-            print(f"{aux['nome']} removido")
-            
-            com_deletado = conteudo.
+        with open('bd.txt', 'w', encoding='utf-8') as pessoas_arquivo:
+            for linha in linhas:
+                pessoa = linha_to_pessoa(linha)
+                if pessoa and pessoa["cpf"] == cpf:
+                    nome_deletado = pessoa["nome"]
+                    print("\nAchou para deletar")
+                    achado = True
+                    continue
+                pessoas_arquivo.write(linha)
+        print(f"\n{nome_deletado} deletado com sucesso")
+        return achado
 
 
     #------------------------------------------------------------------------------
     # apenas testando se o arquivo existe, se nao ja cria, isso aqui so executa 1 vez por execucao do codigo
     try:
-        pessoas_arquivo = open('bd.txt', 'a')
+        pessoas_arquivo = open('bd.txt', 'a', encoding='utf-8')
     except:
-        pessoas_arquivo = open('bd.txt', 'w')
+        pessoas_arquivo = open('bd.txt', 'w', encoding='utf-8')
         pessoas_arquivo.close()
 
 
@@ -138,7 +146,7 @@ def main():
             case 3:
                 print("\n========BUSCAR PESSOAS POR CPF====================================================================")
 
-                cpf = int(input("\nCpf: ")).strip()     # o strip() é para remover os espaços em branco
+                cpf = str(input("\nCpf: ")).strip()     # o strip() é para remover os espaços em branco
                 buscar_pessoa_p_cpf(cpf)
 
             case 4:
