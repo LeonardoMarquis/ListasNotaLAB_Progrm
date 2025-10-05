@@ -1,17 +1,17 @@
 def main():
     def cadastrar_pessoas():
 
-        pessoas_arquivo = open('bd.txt', 'a+')
-        pessoas = pessoas_arquivo.readlines()
+        pessoas_arquivo = open('bd.txt', 'a+', encoding='utf-8')
+        
 
-        cpf = int(input("\ncpf: "))
-        if cpf in pessoas:        # se existir....
+        cpf = int(input("\ncpf: ")).strip()
+        if cpf in pessoas_arquivo:        # se existir....
             print("\nJá existe alguem com esse cpf!")
                 
         else:
-            nome = str(input("\nNome: "))
-            endereco = str(input("\nEndereço: "))
-            telefones = []
+            nome = str(input("\nNome: ")).strip()
+            endereco = str(input("\nEndereço: ")).strip()
+            telefones_primitivo = []
 
             while True:
                 option = str(input("\nDigitar telefones, min 8 e max 11 digitos (sim/nao): "))
@@ -19,45 +19,70 @@ def main():
                 match option.lower():
 
                     case "sim":
-                        telefone = str(input("Telefone: "))
+                        telefone = str(input("Telefone: ")).strip()
 
                         if len(telefone) < 8 or len(telefone)> 11:
                             print("Errou numero de digitos do telefone")
                             break
 
-                        telefones.append(telefone)
+                        telefones_primitivo.append(telefone)
                     case "nao":
+                        separador = ","
+                        telefones_separados_virgu = separador.join(telefones_primitivo)   # para separar os telefones por ,
 
-                        pessoa = {'cpf': cpf, 'nome': nome, 'endereco': endereco, 'telefones': telefones}
-                        pessoas[cpf] = pessoa   # no caso, a posicao n°cpf sera a posicao do dicionario pessoa, cpf sera um indice
+                        telefones = telefones_separados_virgu
 
-                        print(f"\n{pessoas[cpf]} adicionado com sucesso")
+                        linha_pessoa = f"{cpf};{nome};{endereco};{telefones}"
+                        with open('bd.txt', mode='a', encoding='utf-8') as file:
+                            file.write(linha_pessoa)
+                        
+                        print(f"\n{cpf} | {nome} adicionado com sucesso")
                         break
                         
                     case _:
                         print("\nDigitaste algo errado! Nenhuma alteração feita")
                         break
 
+    
+    def linha_to_pessoa(linha):
+        linha = linha.strip()
+        if not linha:
+            return None
+        
+        elementos = linha.split(";", 3)     # corta os tres ; que separam os 4 atributos de pessoa linha
+        if len(elementos) != 4:             # se o n de elementos separados por ; for diferente de 4
+            return None
 
+        cpf, nome, endereco, telefones = elementos
 
+        return{"cpf": cpf, "nome": nome, "endereco": endereco, "telefones": telefones}
 
-    def listar_pessoas(lista):
-        if len(lista) == 0:
+    def listar_pessoas():
+        pessoas_arquivo = open('bd.txt', 'r', encoding='utf-8')
+        pessoas = pessoas_arquivo.readlines()
+        if len(pessoas) == 0:
             print("\nA lista está vazia!")
 
-        for i in lista:
-            print(lista[i])
+        for i in pessoas:
+            print(pessoas[i])
         
 
 
                 
-    def buscar_pessoa_p_cpf(cpf, lista):
-        if cpf not in lista:
-            print("\nCPF não encontrado")
+    def buscar_pessoa_p_cpf(cpf):
+        try:
+            with open('bd.txt', 'r', encoding='utf-8') as file:
+                for linha in file:
+                    pessoa = linha_to_pessoa(linha)
+                    if pessoa and pessoa["cpf"] == cpf:
+                        return pessoa
 
-        
-        elif cpf in lista:
-            print(lista[cpf])
+        except FileNotFoundError:
+            print("\nArquivo não encontrado")
+            pass
+
+        print("\ncpf não encontrado")
+        return None
 
     def buscar_pessoa_p_telefone(telefone, lista):
         telefone = str(telefone).strip()    # garante que o numero de telefone buscado sera uma string e estara sem espaços
@@ -75,23 +100,21 @@ def main():
     def deletar_pessoa_p_cpf(cpf):
         pessoas_arquivo = open('bd.txt', 'r', encoding='utf-8')
 
-        conteudo = pessoas_arquivo.readlines()
-
         buscar_pessoa_p_cpf(cpf, conteudo)
 
         if cpf in conteudo:
             aux = conteudo[cpf]
             print(f"{aux['nome']} removido")
             
-            com_deletado = conteudo.pop(cpf)
+            com_deletado = conteudo.
 
 
     #------------------------------------------------------------------------------
     # apenas testando se o arquivo existe, se nao ja cria, isso aqui so executa 1 vez por execucao do codigo
     try:
-        pessoas_arquivo = open('bd.txt', mode='a')
+        pessoas_arquivo = open('bd.txt', 'a')
     except:
-        pessoas_arquivo = open('bd.txt', mode='w')
+        pessoas_arquivo = open('bd.txt', 'w')
         pessoas_arquivo.close()
 
 
@@ -110,24 +133,24 @@ def main():
 
             case 2:
                 print("\n========LISTAR PESSOAS====================================================================")
-                listar_pessoa()
+                listar_pessoas()
 
             case 3:
                 print("\n========BUSCAR PESSOAS POR CPF====================================================================")
 
-                cpf = int(input("\nCpf: "))
+                cpf = int(input("\nCpf: ")).strip()     # o strip() é para remover os espaços em branco
                 buscar_pessoa_p_cpf(cpf)
 
             case 4:
                 print("\n========BUSCAR PESSOAS PELO TELEFONE====================================================================")
 
-                telefone = int(input("\nTelefone: "))
-                buscar_pessoa_p_telefone(telefone)
+                telefone = str(input("\nTelefone: "))
+                buscar_pessoa_p_telefone(telefone).strip()
 
             case 5:
                 print("\n========DELETAR PESSOAS POR CPF====================================================================")
                 
-                cpf = int(input("\nCpf: "))
+                cpf = str(input("\nCpf: ")).strip()
                 deletar_pessoa_p_cpf(cpf)
                 
                 
